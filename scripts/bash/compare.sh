@@ -1,4 +1,9 @@
 #!/bin/bash
+if [ $# -lt 2 ]; then
+    echo "Error: Missing required parameters"
+    echo "Usage: $0 <ver1> <ver2>"
+    exit 1
+fi
 ver1=$1
 ver2=$2
 echo "CVS compare $ver1 and $ver2"
