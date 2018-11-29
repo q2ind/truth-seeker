@@ -141,15 +141,16 @@ ln -s notes/kafka_notes .
 ln -s notes/dev-kafka-notes .
 ## link qiao notes (issues) 08/09/2018
 ln -s notes/qiao_notes .   
-ln -s notes/kafka_load_tests_notes .
-ln -s notes/kafka-cluster-upgrade-2018-10 $dest_dir
+#ln -s notes/kafka_load_tests_notes .
 ln -s notes/kafka-tasks $dest_dir
 
 ## link previous week tasks
-#let "days_diff=7-$day_shift"
-let "days_diff=7+$day_shift"
+let "days_diff=7-$day_shift"
+#let "days_diff=7+$day_shift"
+echo "-- debug -- days_diff=$days_diff"
 #prev_week=`date -v-7d +%m%d`
 prev_week=`date -v-${days_diff}d +%m%d`
+echo "-- debug -- prev_week=$prev_week"
 ln -s ../week-$prev_week/tasks prev.tasks
 
 
