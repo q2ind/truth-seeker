@@ -15,7 +15,8 @@ notes_dir=/Users/garychen/Documents/mystuff/notes
 ln -s ${docs_dir} $dest_dir
 #ln -s ${jira_dir} $dest_dir
 ln -s ${notes_dir} $dest_dir
-ln -s ${jira_dir}/jira-on-going $dest_dir
+#ln -s ${jira_dir}/jira-on-going $dest_dir
+ln -s ${jira_dir} $dest_dir
 
 #echo "Link to work-related docs and directories..."
 #docs=(
@@ -153,6 +154,8 @@ prev_week=`date -v-${days_diff}d +%m%d`
 echo "-- debug -- prev_week=$prev_week"
 ln -s ../week-$prev_week/tasks prev.tasks
 
+## link DMP/CMP related notes
+ln -s notes/cmp_api_notes .
 
 CURRENT_DIR=`pwd`
 echo $CURRENT_DIR
