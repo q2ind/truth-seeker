@@ -66,6 +66,7 @@ fi
 ln -s docs/myStuffToDo .
 
 ## link notes
+## 20200401: added notes-template, to-be-learned, git-notes
 notes=(
 2019-goals
 dev-kafka-notes
@@ -81,6 +82,12 @@ separate-python-config-from-packer
 screwdriver-notes
 targetting-druid-notes
 yinst-notes
+notes-template
+to-be-learned
+git-notes
+vzm-yos
+cdap-notes
+idgraph-mirromaker-notes
 )
 for note in "${notes[@]}"; do
     ln -s notes/"$note" .
