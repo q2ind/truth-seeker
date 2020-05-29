@@ -1,0 +1,278 @@
+MyMac Notes
+
+Last Updated: 2020-05-29
+Initial Date: 2018-07-16
+========================================================================
+Update Oath Okta password 
+(last changed: 2018-07-16
+next: around 2018-10-13)
+- sign in OathConnect on Chrome
+- update Oath Okta password
+- Connect AOL VPN via GP
+- update CICD pw (via https://cicdpassword.ouroath.com)
+- update Kerberos pw (via https://password.office.aol.com)
+========================================================================
+Old Local Password == previous okta password
+
+- run OathConnect prior to change the OATH OKTA password
+========================================================================
+2020-05-29 
+Find DiagnosticReports here:
+/Users/garychen/Library/Logs/DiagnosticReports
+========================================================================
+Switch desktops on a MAC
+- Swipe left or right with three or four fingers on your Multi-Touch trackpad.
+- Swipe left or right with two fingers on your Magic Mouse.
+- Press Control–Right Arrow or Control–Left Arrow on your keyboard.
+- Open Mission Control and click the desired space in the Spaces bar.
+
+Swith panes
+- command + option + <=   and commnad + option + =>
+  or
+  command + [ and command + ]
+========================================================================
+Find out the restart/reboot time
+> last reboot
+========================================================================
+Find all sorts of logs on mac
+    - in Launch Pad, search 'console'
+    - launch console.app
+========================================================================
+iOS tips 
+- to use Notes to scan document (small one?)
+https://www.theverge.com/2017/9/26/16362386/apple-ios-11-notes-document-scanner-how-to-use
+========================================================================
+Command + Option + Shift + Power Button will turn the Mac off immediately, 
+and that is also the SMC Reset button press.
+
+
+Command + Option + P + R is for PRAM. Press and hold those keys for 20 seconds 
+while turning the Mac on. The Mac should continuously reboot until you let go 
+of those keys. If it gets to a login screen, try again.
+========================================================================
+Ref: https://macpaw.com/how-to/full-disk-access-mojave
+
+Full Disk Access is administered via System Preferences > Security & Privacy.
+Starting from macOS 10.14 Mojave it contains a special Full Disk Access 
+section that like a folder. 
+
+How to see Full Disk Access utility:
+
+1. Click on Apple icon > System Preferences...
+2. Go to Security & Privacy
+3. Click on a Privacy Tab
+4. Click Full Disk Access section in the sidebar
+========================================================================
+Install specific version by using brew
+- install homebrew
+> /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+- update homebrew if already installed
+> brew update
+
+- allow brew to lookup versions
+> brew tap homebrew/cask-versions
+
+- list available java versions
+> brew search java
+
+- [optional] to find out the minor version of java
+> brew cask info java8
+
+- install java8
+> brew cask install java8
+
+- install docker
+> brew cask install docker
+========================================================================
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew tap homebrew/cask-versions
+brew cask install homebrew/cask-versions/adoptopenjdk8
+========================================================================
+Install openJdk
+> brew cask uninstall java
+> brew cask install adoptopenjdk
+
+========================================================================
+As of 11/03/2018
+After updated/installed "Mojave" and found SSH and/or SCP have issues
+that is because Mojave release, which enabled QoS (Quality of Service) 
+marking on SSH and SCP packets by default.  
+To fix:
+    in ~/.ssh/config file
+    add the following line
+    Host *
+        IPQoS none
+========================================================================
+When major macOS update
+run command below to instal xrun in System library
+> xcode-select --install
+========================================================================
+Certificate on MacBook Pro
+OK. What you may want to do is open up "Keychain.app" from 
+/Applications/Utilities. Click "Login" then click "Certificates." 
+Remove any expired certificate with your name on it, leaving only the 
+valid certificates. Then for Builders, change the mode from "Automatic" 
+to EAP-TLS. Select your Name from the "Identity" drop-down, and leave 
+Account Name/Username below that blank.
+========================================================================
+Enable sudo on the system (with touch-id)
+I just got a new mac with touch-id, and find that you
+can enable it for sudo on your system by adding
+
+auth sufficient pam_tid.so
+
+to /etc/pam.d/sudo.
+
+========================================================================
+How to use yo/<something> in FirFox
+> http://yo/<something>  then yo/<something> will work
+========================================================================
+sshca 
+# channel: sshca-office  or see yo/sshcafaq
+
+Error: [FATAL] Failed to load YubiKey to ssh-agent: 
+  yubiagent: could not add smartcard /Library/OpenSC/lib/opensc-pkcs11.so: agent failure
+- possible solution:
+> killall yubico-agent
+
+- possible solution 2:
+> killall ssh-agent;
+> killall yubico-agent;
+> yinit --force;
+------------------------------------------------------------------------
+yubikey issues
+- error: FATAL] Checking PIV tool: yubico-piv-tool not working
+- put yubikey in another usb slot and run the command:
+> yubico-piv-tool -a status
+  if works, try to run yinit
+  if not work, try rebooting mac and try yinit
+
+Resetting yubikey run below commands 4 times(?)
+> yubico-piv-tool -a verify-pin -P 471112
+> yubico-piv-tool -a change-puk -P 471112 -N 6756789
+> yubico-piv-tool -a reset
+
+Before running yinit command, ensure you have registered your yubikey
+at yo/yubikey
+------------------------------------------------------------------------
+2020/05/29 08:20:48 [FATAL] Failed to initialize yubico-agent: cannot connect
+2020/05/29 08:20:48  to ssh-agent: dial unix /Users/garychen/.yubiagent/sock:
+2020/05/29 08:20:48  connect: no such file or directory
+
+solution:
+> killall ssh-agent
+> killall yubico-agent
+> yinit
+------------------------------------------------------------------------
+yinit issues
+- error: .. msg="all the modules failed to authenticate the user, exit"
+> rerun yinit
+
+- debugging 'Permission deinied'
+> ynossh -v <host_name>
+> ynossh -v site.ops.corp.yahoo.com 
+
+for emergency (to get 30-day emergency certificate)
+> yinit -emergency
+
+six failed tries locks you out for 15 minutes
+
+$ yinit
+Enter Yubikey PIN (default is 123456):
+2020/03/06 09:07:14 [INFO] Generating new touchless key in hardware......
+2020/03/06 09:07:14 [INFO] Generating new emergency key in hardware......
+Enter Yubikey PIN (default is 123456):
+2020/03/06 09:07:23 [FATAL] Failed to load YubiKey to ssh-agent: yubiagent: could not add smartcard
+2020/03/06 09:07:23  /Library/OpenSC/lib/opensc-pkcs11.so: agent failure
+
+Solution: https://thestreet.vzbuilders.com/thestreet/yubikey-and-touch-to-sudo-issues-and-fixes
+C02VD3ASHTDD:week-0302 $ sudo killall ssh-agent
+Password:
+C02VD3ASHTDD:week-0302 $ killall yubico-agent
+C02VD3ASHTDD:week-0302 $ yinit -hard
+
+Following script should fix most of the issues
+#!/bin/bash
+
+killall ssh-agent
+
+killall yubico-agent
+
+for i in {1..4}; do yubico-piv-tool -a verify-pin -P 471112 ; done
+
+for i in {1..4}; do yubico-piv-tool -a change-puk -P 471112 -N 6756789 ; done
+
+yubico-piv-tool -a reset
+
+yinit --hard  ## 2020-03-06 -hard option is deprecated.
+========================================================================
+Some yinit commands [for debugging purpose]
+> yinit -l garychen
+> yinit -yversion
+
+> yubico-piv-tool -a status
+========================================================================
+Manage Disk Storage 
+
+About this Mac -> Storage -> Manage
+
+========================================================================
+zsh (2020-04-03)
+
+> echo $SHELL  ## to check shell
+> echo $SSH_AUTH_SOCK  ## should be /Users/garychen/.yubiagent/sock
+
+In ~/.zshrc enter the following:
+
+export SSH_AUTH_SOCK=/Users/garychen/.yubiagent/sock
+
+========================================================================
+Check disk space on /tmp
+> df -h /tmp
+========================================================================
+Command + shift + 3               => full screenshot
+Command + shift + 4 + space bar   => you pick the area and save to desktop
+Ctrl + Shift + command + 4 -> Space bar  => save to clipboard not desktop
+
+========================================================================
+2020-04-09  Zoom web join
+For Zoom, the usual is when it asks you to download the client, cancel.
+When you click to join, it will ask to download the client again, cancel again.
+Now you'll have a web join link show up at the bottom
+
+https://github.com/arkadiyt/zoom-redirector
+arkadiyt/zoom-redirector
+Zoom Redirector is a browser extension that transparently redirects 
+any meeting links to use Zoom's browser based web client.
+Stars Language
+406   JavaScript
+========================================================================
+copy to clipboard
+> cat test | pbcopy
+copy from clipboard
+> pbpaste > dest_file
+========================================================================
+
+curl
+
+- get file
+> curl -L0 http://... -o out.file.ext
+========================================================================
+2020-04-20
+
+brew info python  ==> list installed version
+brew switch python 3.7.7
+brew switch python 3.6.5_1
+brew search python3
+# install python 3.6.5_1
+brew install --ignore-dependencies https://raw.githubusercontent.com/Homebrew/homebrew-core/f2a764ef944b1080be64bd88dca9a1d80130c558/Formula/python.rb
+
+# install openssl v1.0
+brew uninstall --ignore-dependencies openssl
+brew uninstall --ignore-dependencies --force openssl
+brew install https://github.com/tebelorg/Tump/releases/download/v1.0.0/openssl.rb
+
+# switch python version
+brew switch python 3.6.5.1
+========================================================================

@@ -1,0 +1,169 @@
+Unix Notes
+
+Last Updated: 2020-05-29
+Initial Date: 2018-08-15
+------------------------------------------------------------------------
+Tor : Tor Browser - anonymous communication
+------------------------------------------------------------------------
+connection tool
+> nc <host> <port>
+
+------------------------------------------------------------------------
+Find Linux kernel version
+> uname -srm
+
+Find OS info
+> uname -a
+------------------------------------------------------------------------
+Singnal
+> kill -l
+  2)  SIGINT 
+  9)  SIGKILL
+  15) SIGTERM
+------------------------------------------------------------------------
+- cut example
+ps -L u n | tr -s " " | cut -d " " -f 2,3
+ps -ef | grep 'qiao' | tr -s " " | cut -d " " -f 1,2,8
+------------------------------------------------------------------------
+Delete a file starting with dash/hypen 
+> \rm ./-.log
+------------------------------------------------------------------------
+Find functions
+> declare -F  [only list function names]
+> declare -f <function name>  [list function details]
+
+Functions are declared in ~/.functions.sh
+
+In bash shell : typeset is synonym of declare
+> typeset -F
+> typeset -f <function name>
+
+Delete a shell function
+> unset -f <function_name>
+------------------------------------------------------------------------
+find command
+> find . -type f -exec grep -Iq . {} \; -and -print
+> find . -type f -exec grep -Il "" {} \; -and -print
+-- find non binary files
+> find . -type f -exec file {} + | \
+  awk -F: '/ASCII text/ {print $1}' | xargs -d'\n' -r flip -u
+                                            ^^ process each file 
+                
+> file * | awk -F: '/ASCII text/ {print $1}' | xargs -d'\n' -r flip -u
+                                                     ^^ process each file 
+------------------------------------------------------------------------
+Tar and compress file ==> *.tgz or *.tar.gz
+> tar -zcvf tar-compressed.tar.gz <files to be tared and compressed>
+> tar -zxvf tar-compressed.tgz  ### de-compressed and un-tared files
+> tar -tvf tar-compressed.tgz   ### view internal files without decompressed it
+------------------------------------------------------------------------
+awk 
+> awk '{print}' file
+------------------------------------------------------------------------
+This command will find read-only, RO file system exists on linux system
+
+grep "[[:space:]]ro[[:space:],]" /proc/mounts
+------------------------------------------------------------------------
+Find out which process listening on a particular port
+> sudo yum install net-tools # RHEL/CentOS ## to install netstat
+
+> sudo netstat -ltnp > t    ## or | grep -w ':80'
+  -l : only show listening sockets
+  -t : to display tcp connections
+  -n : show numerical addresses
+  -p : show the process ID and the process name
+  grep -w - show matching of exact string (:80)
+
+> sudo yum install lsof
+
+> lsof -i :80  ## to find the process/servcie listening on a particular port
+
+> sudo yum install psmisc  
+
+> fuser 80/tcp
+------------------------------------------------------------------------
+Firewall rules
+
+> sudo iptables -S
+------------------------------------------------------------------------
+List disk block (linux)
+
+lsblk  : check disk type [encrypted or not]
+------------------------------------------------------------------------
+List enabled services
+> systemctl list-unit-files | grep enabled
+
+Start/stop services
+> systemctl start <service_name>
+> systemctl stop <service_name>
+
+Service status
+> systemctl status <service_name>
+------------------------------------------------------------------------
+Rename filename
+> mv $old_file $new_file
+To rename a group of files (with similar nameing pattern)
+> rename [brew install rename]
+> rename 's/<old pattern>/<new pattern>/' <file_names>
+------------------------------------------------------------------------
+2019-10-30, after upgrade to Catilina
+when open a terminal:
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050
+
+to silence it, in .bash_profile add
+export BASH_SILENCE_DEPRECATION_WARNING=1
+------------------------------------------------------------------------
+logrotate
+/etc/logrotate.conf
+/etc/logrotate.d/<config files>
+/var/lib/logrotate/logrotate.status  --- status file which contains 
+                                         what file has been rotated
+------------------------------------------------------------------------
+Command re-direction
+
+Remember to use -- when passing arbitrary arguments to commands 
+(or use redirections where possible). So sort -- "$f1" or better 
+sort < "$f1" instead of sort "$f1".
+
+sort "$f1"
+
+fails for values of $f1 that start with - or here for the case of 
+sort some that start with + (can have severe consequences 
+for a file called -o/etc/passwd for instance).
+
+sort -- "$f1"
+
+(where -- signals the end of options) addresses most of those 
+issues but still fails for the file called - (which sort 
+interprets as meaning its stdin instead).
+
+sort < "$f1"
+
+Doesn't have those issues.
+
+Here, it's the shell that opens the file. It also means that 
+if the file can't be opened, you'll also get a potentially more 
+useful error message (for instance, most shells will indicate 
+the line number in the script), and the error message will be 
+consistent if you use redirections wherever possible to open files.
+
+sort < "$f1" > out
+
+(contrary to sort -- "$f1" > out), if "$f1" can't be opened, 
+out won't be created/truncated and sort not even run.
+------------------------------------------------------------------------
+sort -V   ==> will sort in natural numerical order
+------------------------------------------------------------------------
+** Write random data to the hard drive -- recover needs an OS reinstall
+sudo dd if=/dev/random of=/dev/sda
+------------------------------------------------------------------------
+> yum install -y <package_name>
+> yum list installed <package_name>
+> yum remove -y <package_name>
+
+> alternatives --display java
+
+------------------------------------------------------------------------
